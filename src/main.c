@@ -208,7 +208,7 @@ void init_main_game(void)
     pal_col(1, 0xF);
     pal_col(2, 0xF);
     pal_col(3, 0xF);
-    oam_size(BSPR);
+    oam_size(1);
     player_pos[1] = 0;
     player_pos[0] = (255-16-16) / 2;
     ppu_off();
