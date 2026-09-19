@@ -44,6 +44,7 @@ char star_state;
 unsigned char wave;
 unsigned char level;
 unsigned char enemy_spawn_timer;
+unsigned char enemy_spawn_timer_temp;
 unsigned char enemy_destroyed;
 signed char direction_wants[3];
 unsigned char hand_flash;
@@ -454,7 +455,7 @@ void update_main_game(void)
         temp4 = update_enemy(&enemies[temp0]);
         if(temp4 == 1)break;
         if(temp4 == 0 && update_score_if == 0)update_score_if = 1;
-        if (enemy_destroyed > level_enemy_needs_to_destroy[level][wave])
+        if (enemy_destroyed > level_enemy_needs_to_destroy[level & 0b1111][wave])
         {
             enemy_destroyed = 0;
             wave += 1;
@@ -471,9 +472,9 @@ void update_main_game(void)
                 direction_wants[2] = DIR_225;
             }
             if (!(level & 1))
-                temp1 = level_waves[level >> 1] >> 4;
+                temp1 = level_waves[(level & 0b1111) >> 1] >> 4;
             else
-                temp1 = level_waves[level >> 1] & 0b00001111;
+                temp1 = level_waves[(level & 0b1111) >> 1] & 0b00001111;
             if (wave > temp1)
             {
                 temp2 = 1;
@@ -744,7 +745,10 @@ void spawn_enemy(void)
 {
     if (enemy_spawn_timer == 0)
     {
-        enemy_spawn_timer = (rand8() & 0b01111111) + 60;
+        enemy_spawn_timer = (rand8() & 0b01111111) + 100;
+        enemy_spawn_timer_temp = (2 * (level >> 2));
+        if(enemy_spawn_timer > enemy_spawn_timer_temp)
+            enemy_spawn_timer -= enemy_spawn_timer_temp;
         for (temp1 = 0; temp1 < ENEMY_MAX; ++temp1)
         {
             if (enemies[temp1].used)
@@ -759,9 +763,9 @@ void spawn_enemy(void)
                 enemies[temp1].self_timer = 0;
                 // level = wave = 0;
                 if (direction_wants[0] == DIR_0)
-                    enemies[temp1].type = level_enemies[level][wave];
+                    enemies[temp1].type = level_enemies[level & 0b1111][wave];
                 else
-                    enemies[temp1].type = level_enemies[level][wave] | 0b10000000;
+                    enemies[temp1].type = level_enemies[level & 0b1111][wave] | 0b10000000;
                 enemies[temp1].x = (rand8() & 0b01111111) + 20;
                 if (direction_wants[0] == DIR_0)
                     enemies[temp1].y = 10;

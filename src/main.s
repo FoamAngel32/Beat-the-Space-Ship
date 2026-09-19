@@ -1534,21 +1534,21 @@ _ship_enemy_warn_Metasprite:
 	.byte	$41
 	.byte	$80
 _level_enemies:
-	.byte	$02
-	.byte	$02
+	.byte	$00
+	.byte	$00
 	.byte	$01
 	.byte	$03
 	.res	12,$00
 	.byte	$00
-	.byte	$00
-	.byte	$01
-	.byte	$02
-	.res	12,$00
-	.byte	$00
-	.byte	$00
-	.byte	$01
 	.byte	$02
 	.byte	$03
+	.byte	$04
+	.res	12,$00
+	.byte	$03
+	.byte	$03
+	.byte	$04
+	.byte	$01
+	.byte	$02
 	.res	11,$00
 	.byte	$04
 	.byte	$06
@@ -1556,15 +1556,179 @@ _level_enemies:
 	.byte	$02
 	.byte	$03
 	.res	11,$00
-	.res	192,$00
+	.byte	$00
+	.byte	$01
+	.byte	$02
+	.res	13,$00
+	.byte	$03
+	.byte	$04
+	.byte	$05
+	.byte	$06
+	.res	12,$00
+	.byte	$00
+	.byte	$03
+	.byte	$01
+	.byte	$04
+	.byte	$02
+	.res	11,$00
+	.byte	$05
+	.byte	$00
+	.byte	$06
+	.byte	$02
+	.byte	$03
+	.res	11,$00
+	.byte	$01
+	.byte	$04
+	.byte	$03
+	.byte	$05
+	.byte	$06
+	.res	11,$00
+	.byte	$02
+	.byte	$00
+	.byte	$05
+	.byte	$04
+	.byte	$03
+	.byte	$06
+	.res	10,$00
+	.byte	$03
+	.byte	$05
+	.byte	$01
+	.byte	$06
+	.byte	$04
+	.byte	$02
+	.res	10,$00
+	.byte	$06
+	.byte	$03
+	.byte	$05
+	.byte	$00
+	.byte	$04
+	.byte	$02
+	.res	10,$00
+	.byte	$04
+	.byte	$06
+	.byte	$01
+	.byte	$05
+	.byte	$03
+	.byte	$02
+	.res	10,$00
+	.byte	$05
+	.byte	$03
+	.byte	$06
+	.byte	$04
+	.byte	$01
+	.byte	$02
+	.res	10,$00
+	.byte	$06
+	.byte	$05
+	.byte	$03
+	.byte	$04
+	.byte	$02
+	.byte	$01
+	.res	10,$00
+	.byte	$05
+	.byte	$06
+	.byte	$04
+	.byte	$03
+	.byte	$02
+	.byte	$01
+	.byte	$00
+	.res	9,$00
 _level_waves:
-	.byte	$33
+	.byte	$44
+	.byte	$23
+	.byte	$44
+	.byte	$45
+	.byte	$55
+	.byte	$55
+	.byte	$56
 _level_enemy_needs_to_destroy:
 	.byte	$05
 	.byte	$0A
 	.byte	$03
 	.byte	$10
 	.res	12,$00
+	.byte	$05
+	.byte	$06
+	.byte	$07
+	.byte	$0C
+	.res	12,$00
+	.byte	$08
+	.byte	$0A
+	.byte	$07
+	.byte	$0D
+	.res	12,$00
+	.byte	$0A
+	.byte	$0B
+	.byte	$0C
+	.byte	$0D
+	.res	12,$00
+	.byte	$14
+	.byte	$14
+	.byte	$0F
+	.res	13,$00
+	.byte	$07
+	.byte	$08
+	.byte	$0A
+	.byte	$09
+	.res	12,$00
+	.byte	$0A
+	.byte	$0C
+	.byte	$0E
+	.byte	$10
+	.res	12,$00
+	.byte	$0C
+	.byte	$0E
+	.byte	$10
+	.byte	$12
+	.res	12,$00
+	.byte	$0E
+	.byte	$10
+	.byte	$12
+	.byte	$14
+	.res	12,$00
+	.byte	$10
+	.byte	$12
+	.byte	$14
+	.byte	$16
+	.byte	$18
+	.res	11,$00
+	.byte	$12
+	.byte	$14
+	.byte	$16
+	.byte	$18
+	.byte	$1A
+	.res	11,$00
+	.byte	$14
+	.byte	$16
+	.byte	$18
+	.byte	$1A
+	.byte	$1C
+	.res	11,$00
+	.byte	$16
+	.byte	$18
+	.byte	$1A
+	.byte	$1C
+	.byte	$1E
+	.res	11,$00
+	.byte	$18
+	.byte	$1A
+	.byte	$1C
+	.byte	$1E
+	.byte	$20
+	.res	11,$00
+	.byte	$1A
+	.byte	$1C
+	.byte	$1E
+	.byte	$20
+	.byte	$22
+	.res	11,$00
+	.byte	$1C
+	.byte	$1E
+	.byte	$20
+	.byte	$22
+	.byte	$24
+	.byte	$26
+	.res	10,$00
 
 .segment	"BSS"
 
@@ -4354,12 +4518,14 @@ L00A8:	lda     #$02
 	lda     _enemy_spawn_timer
 	jne     L0026
 ;
-; enemy_spawn_timer = (rand8() & 0b01111111) + 60;
+; enemy_spawn_timer = (rand8() & 0b01111111) + 100 - (1 * level);
 ;
 	jsr     _rand8
 	and     #$7F
 	clc
-	adc     #$3C
+	adc     #$64
+	sec
+	sbc     _level
 	sta     _enemy_spawn_timer
 ;
 ; for (temp1 = 0; temp1 < ENEMY_MAX; ++temp1)
@@ -4472,7 +4638,7 @@ L0013:	jsr     mulax9
 	lda     _direction_wants
 	bne     L0014
 ;
-; enemies[temp1].type = level_enemies[level][wave];
+; enemies[temp1].type = level_enemies[level & 0b1111][wave];
 ;
 	tax
 	lda     _temp1
@@ -4485,8 +4651,9 @@ L0016:	jsr     mulax9
 	txa
 	adc     #>(_enemies)
 	sta     sreg+1
-	ldx     #$00
 	lda     _level
+	ldx     #$00
+	and     #$0F
 	jsr     aslax4
 	clc
 	adc     #<(_level_enemies)
@@ -4501,7 +4668,7 @@ L0016:	jsr     mulax9
 ;
 	jmp     L0027
 ;
-; enemies[temp1].type = level_enemies[level][wave] | 0b10000000;
+; enemies[temp1].type = level_enemies[level & 0b1111][wave] | 0b10000000;
 ;
 L0014:	ldx     #$00
 	lda     _temp1
@@ -4514,8 +4681,9 @@ L0018:	jsr     mulax9
 	txa
 	adc     #>(_enemies)
 	sta     sreg+1
-	ldx     #$00
 	lda     _level
+	ldx     #$00
+	and     #$0F
 	jsr     aslax4
 	clc
 	adc     #<(_level_enemies)
@@ -7009,14 +7177,14 @@ L0164:	lda     _player_dir
 	cmp     #$01
 	beq     L0027
 	cmp     #$02
-	beq     L01A2
+	beq     L01A1
 	cmp     #$03
 	bne     L0165
 ;
 ; player_speed_sub_h += 2;
 ;
 L0027:	lda     #$02
-L01A2:	clc
+L01A1:	clc
 	adc     _player_speed_sub_h
 	sta     _player_speed_sub_h
 	bpl     L0168
@@ -7981,7 +8149,7 @@ L00F0:	stx     tmp1
 ;
 ; else
 ;
-	jmp     L01AB
+	jmp     L01AA
 ;
 ; oam_meta_spr(player_pos[0], player_pos[1] - camera_y, ship_fire_small_list[4 - player_dir]);
 ;
@@ -8015,7 +8183,7 @@ L00F2:	jsr     tossubax
 ;
 ; else if ((anim_timer0 & 0b1) == 0 && temp0 > temp1 * 3)
 ;
-	jmp     L01AB
+	jmp     L01AA
 L0189:	lda     _anim_timer0
 	and     #$01
 	jne     L019F
@@ -8055,12 +8223,12 @@ L00F8:	jsr     mulax3
 	sta     (c_sp),y
 	ldx     #$00
 	lda     _player_dir
-	bpl     L01BB
+	bpl     L01BA
 	dex
 ;
 ; else
 ;
-	jmp     L01BB
+	jmp     L01BA
 ;
 ; oam_meta_spr(player_pos[0], player_pos[1] - camera_y, ship_fire_big_list[4 - player_dir]);
 ;
@@ -8083,7 +8251,7 @@ L00FB:	jsr     decsp2
 	bpl     L00FF
 	ldx     #$FF
 L00FF:	jsr     tossubax
-L01BB:	stx     tmp1
+L01BA:	stx     tmp1
 	asl     a
 	rol     tmp1
 	clc
@@ -8091,7 +8259,7 @@ L01BB:	stx     tmp1
 	sta     ptr1
 	lda     tmp1
 	adc     #>(_ship_fire_big_list)
-L01AB:	sta     ptr1+1
+L01AA:	sta     ptr1+1
 	ldy     #$01
 	lda     (ptr1),y
 	tax
@@ -8152,16 +8320,17 @@ L0107:	jsr     mulax9
 ;
 L019C:	lda     _temp4
 	ora     _temp4+1
-	bne     L01A0
+	bne     L018F
 	lda     _update_score_if
-	bne     L01A0
+	bne     L018F
 	lda     #$01
 	sta     _update_score_if
 ;
-; if (enemy_destroyed > level_enemy_needs_to_destroy[level][wave])
+; if (enemy_destroyed > level_enemy_needs_to_destroy[level & 0b1111][wave])
 ;
-L01A0:	ldx     #$00
-	lda     _level
+L018F:	lda     _level
+	ldx     #$00
+	and     #$0F
 	jsr     aslax4
 	clc
 	adc     #<(_level_enemy_needs_to_destroy)
@@ -8227,9 +8396,10 @@ L0158:	sta     _direction_wants+2
 	and     #$01
 	bne     L0191
 ;
-; temp1 = level_waves[level >> 1] >> 4;
+; temp1 = level_waves[(level & 0b1111) >> 1] >> 4;
 ;
 	lda     _level
+	and     #$0F
 	lsr     a
 	sta     ptr1
 	clc
@@ -8248,9 +8418,10 @@ L0158:	sta     _direction_wants+2
 ;
 	jmp     L0115
 ;
-; temp1 = level_waves[level >> 1] & 0b00001111;
+; temp1 = level_waves[(level & 0b1111) >> 1] & 0b00001111;
 ;
 L0191:	lda     _level
+	and     #$0F
 	lsr     a
 	sta     ptr1
 	clc
@@ -8774,12 +8945,12 @@ L019A:	ldx     _player_dir
 	sta     (c_sp),y
 	ldx     #$00
 	lda     _player_dir
-	bpl     L01BC
+	bpl     L01BB
 	dex
 ;
 ; else
 ;
-	jmp     L01BC
+	jmp     L01BB
 ;
 ; oam_meta_spr(player_pos[0], player_pos[1] - camera_y, ship_self_list[4 - player_dir]);
 ;
@@ -8802,7 +8973,7 @@ L0144:	jsr     decsp2
 	bpl     L0148
 	ldx     #$FF
 L0148:	jsr     tossubax
-L01BC:	stx     tmp1
+L01BB:	stx     tmp1
 	asl     a
 	rol     tmp1
 	clc
