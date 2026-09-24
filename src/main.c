@@ -138,7 +138,7 @@ void init_title(void)
     camera_extra_moving_timer = 0;
     player_speed_v = player_speed_h = 0;
     player_speed_sub_v = player_speed_sub_h = 0;
-    life = 0;
+    life = 2;
     temp3 = 0;
     ppu_off();
     ppu_wait_nmi();
@@ -160,6 +160,7 @@ void init_title(void)
         vram_put(0b01010101);
     ppu_wait_nmi();
     pal_bg(bg_pal);
+    pal_col(0x1D, 0x0F);
     vram_adr(NAMETABLE_A);
     vram_unrle(title);
     multi_vram_buffer_horz(display_score[1], 7, 0x2016);
